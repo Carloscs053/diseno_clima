@@ -17,9 +17,8 @@ class TemperaturaResponse {
   final int? utcOffsetSeconds;
   final String? timezone;
   final String? timezoneAbbreviation;
-  final double? elevation;
-  final CurrentUnits? currentUnits;
-  final Current? current;
+  final HourlyUnits? hourlyUnits;
+  final Hourly? hourly;
 
   TemperaturaResponse({
     this.latitude,
@@ -28,9 +27,8 @@ class TemperaturaResponse {
     this.utcOffsetSeconds,
     this.timezone,
     this.timezoneAbbreviation,
-    this.elevation,
-    this.currentUnits,
-    this.current,
+    this.hourlyUnits,
+    this.hourly,
   });
 
   factory TemperaturaResponse.fromJson(Map<String, dynamic> json) =>
@@ -41,13 +39,10 @@ class TemperaturaResponse {
         utcOffsetSeconds: json["utc_offset_seconds"],
         timezone: json["timezone"],
         timezoneAbbreviation: json["timezone_abbreviation"],
-        elevation: json["elevation"],
-        currentUnits: json["current_units"] == null
+        hourlyUnits: json["hourly_units"] == null
             ? null
-            : CurrentUnits.fromJson(json["current_units"]),
-        current: json["current"] == null
-            ? null
-            : Current.fromJson(json["current"]),
+            : HourlyUnits.fromJson(json["hourly_units"]),
+        hourly: json["hourly"] == null ? null : Hourly.fromJson(json["hourly"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -57,48 +52,45 @@ class TemperaturaResponse {
     "utc_offset_seconds": utcOffsetSeconds,
     "timezone": timezone,
     "timezone_abbreviation": timezoneAbbreviation,
-    "elevation": elevation,
-    "current_units": currentUnits?.toJson(),
-    "current": current?.toJson(),
+    "hourly_units": hourlyUnits?.toJson(),
+    "hourly": hourly?.toJson(),
   };
 }
 
-class Current {
-  final String? time;
-  final int? interval;
-  final double? temperature2M;
+class Hourly {
+  final List<String>? time;
+  final List<double>? temperature2M;
 
-  Current({this.time, this.interval, this.temperature2M});
+  Hourly({this.time, this.temperature2M});
 
-  factory Current.fromJson(Map<String, dynamic> json) => Current(
-    time: json["time"],
-    interval: json["interval"],
-    temperature2M: json["temperature_2m"],
+  factory Hourly.fromJson(Map<String, dynamic> json) => Hourly(
+    time: json["time"] == null
+        ? []
+        : List<String>.from(json["time"]!.map((x) => x)),
+    temperature2M: json["temperature_2m"] == null
+        ? []
+        : List<double>.from(json["temperature_2m"]!.map((x) => x?.toDouble())),
   );
 
   Map<String, dynamic> toJson() => {
-    "time": time,
-    "interval": interval,
-    "temperature_2m": temperature2M,
+    "time": time == null ? [] : List<dynamic>.from(time!.map((x) => x)),
+    "temperature_2m": temperature2M == null
+        ? []
+        : List<dynamic>.from(temperature2M!.map((x) => x)),
   };
 }
 
-class CurrentUnits {
+class HourlyUnits {
   final String? time;
-  final String? interval;
   final String? temperature2M;
 
-  CurrentUnits({this.time, this.interval, this.temperature2M});
+  HourlyUnits({this.time, this.temperature2M});
 
-  factory CurrentUnits.fromJson(Map<String, dynamic> json) => CurrentUnits(
-    time: json["time"],
-    interval: json["interval"],
-    temperature2M: json["temperature_2m"],
-  );
+  factory HourlyUnits.fromJson(Map<String, dynamic> json) =>
+      HourlyUnits(time: json["time"], temperature2M: json["temperature_2m"]);
 
   Map<String, dynamic> toJson() => {
     "time": time,
-    "interval": interval,
     "temperature_2m": temperature2M,
   };
 }

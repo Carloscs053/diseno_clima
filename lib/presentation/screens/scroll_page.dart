@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:segundo_diseno/models/tiempo_response.dart';
 import 'package:segundo_diseno/providers/tiempo_provider.dart';
 
 class ScrollPage extends StatelessWidget {
@@ -51,7 +50,7 @@ class ScrollPage extends StatelessWidget {
   }
 
   Widget _imagenFondo() {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: double.infinity,
       child: Image(
@@ -66,15 +65,14 @@ class ScrollPage extends StatelessWidget {
   Widget _texto(BuildContext context) {
     final estiloTexto = TextStyle(color: Colors.white, fontSize: 50);
     final tiempoProvider = Provider.of<TiempoProvider>(context);
+    String tiempoActual =
+        tiempoProvider.temp.hourly!.temperature2M!.first.toString() ?? "--";
     String diaActual = obtenerDiaSemana();
 
     return SafeArea(
       child: Column(
         children: [
-          Text(
-            '${tiempoProvider.temp.current?.temperature2M ?? "--"}º',
-            style: estiloTexto,
-          ),
+          Text('$tiempoActualº', style: estiloTexto),
           Text(diaActual, style: estiloTexto),
           Expanded(child: Container()),
           Icon(Icons.keyboard_arrow_down, size: 70, color: Colors.white),
